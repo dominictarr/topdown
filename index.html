@@ -1,0 +1,331 @@
+<!doctype html>
+<html>
+  <head>
+    <title>IsoCanvas</title>
+    <meta charset="utf-8" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        background: #eee;
+        padding: 1em;
+      }
+      
+      #c {
+        background: #000;
+      }
+      
+      #r {
+        float: left;
+      }
+    </style>
+    <script src="easel.js"></script>
+  </head>
+  <body>
+    <canvas id="c" width="1024" height="600"></canvas>
+    <div id=resources>
+      <img id=hull src="images/hull_sprite_larger2.png">
+      <img id=turret src="images/turret_sprite1.png">
+    </div>
+    <p id="r">360</p>
+  </body>
+  <script>
+    var canvas = document.getElementById('c');
+    var stage = new Stage(canvas);
+    
+    function createPlayer (name, origin) {
+      return {
+        name: name,
+        origin:   origin || [ 100, 100],
+        velocity: [ 0, 0 ],
+        angle: Math.PI*-0.5,
+        turretAngle: Math.PI*-0.5,
+        facing: a2v(Math.PI*1), // or as angle?
+        r: 8,
+        l: 16,
+        w: 16,
+        radius: 24,
+        accelerate: false,
+        maxSpeed: 100,
+        speed: 0,
+        acceleration: 24,
+        touch: function (other) {
+          //calculate angle to other object, and bump away from it.
+          //reduce speed by the dot product of the facing
+          //
+          var dir = normalize(subtractVectors(this.origin, other.origin))
+          var d = dot(dir, this.facing)
+          console.error('TOUCH', this.name, d, dir)          
+          if(d < 0)
+            this.speed = -6
+        }
+      }
+    }
+ 
+    function addToVector (a, b, x) {
+      var l = 2
+      while (l--) a[l] += ((+b[l] || 0) * ('number' == typeof x ? x : 1))
+      return a
+    }
+
+    function diffVectors (a, b) {
+      var l = 2
+      var d = new Array(2)      
+      while (l--) {
+        //TODO: take into account donut worldness (torus)
+        var _a = (+a[l] || 0), _b = (+b[l] || 0)
+        d[l] = Math.max(_a,_b) - Math.min(_a,_b)
+      }
+      return d
+    }
+    
+    function normalize (a) {
+      var l = vectorLength(a)
+      a[0] = a[0]/l
+      a[1] = a[1]/l
+      return a
+    }
+
+    function dot (a,b) {
+      return a[0] * b[0] + a[1]* b[1]
+    }
+
+    function subtractVectors (a, b) {
+      var l = 2
+      var d = new Array(2)      
+      while (l--) {
+        //TODO: take into account donut worldness (torus)
+        d[l] = (+a[l] || 0) - (+b[l] || 0)
+      }
+      return d
+    }
+
+    //convert a unit vector into an angle in radians.
+    function a2v (a) { return [Math.cos(a), Math.sin(a)] }
+    //convert an angle in radians to a unit vector.
+    function v2a (v) { return Math.atan(v[0]/v[1]) * (v[1] > 0 ? 1 : -1 ) }
+    
+    function assert(test, message) {
+      if(!test) throw new Error(message)
+    }
+    
+    function vectorLength(v) {
+      var s = 0, l = 2
+      while (l--) s += Math.pow(v[l],2)
+      return Math.sqrt(s)
+    }
+
+    var lastTick = Date.now()
+
+    function drawPlayer (p) {
+
+      var g=new Graphics()
+      g.beginStroke(Graphics.getRGB(0,255,0));
+      g.drawCircle(0,0, p.r)
+      g.moveTo(0,0)
+
+      var hull = new Bitmap(document.getElementById('hull'))
+      var turret = new Bitmap(document.getElementById('turret'))
+
+      //g.beginBitmapStroke(hull.image)
+      //ahh, it hasn't loaded yet
+      
+      hull.regX = 32;
+      hull.regY = 32;
+      hull.rotation = 90
+
+      turret.x = 0
+      turret.regX = 32;
+      turret.regY = 34;
+      turret.rotation = 90
+
+      p.turret = turret
+      p.facing = a2v(p.angle)
+
+      g.lineTo(p.r * 2, 0)
+      g.moveTo(p.l, p.w)
+      g.lineTo(p.l * -1, p.w)
+      g.lineTo(p.l * -1, p.w * -1)
+      g.lineTo(p.l, p.w * -1)
+      g.lineTo(p.l, p.w)
+
+      p.shape = new Container()
+      p.shape.addChild(hull)//new Shape(g)
+      p.shape.addChild(turret)//new Shape(g)
+
+
+      //split this into motion and drawing.
+      //so that motion is decoupled from drawing.
+      p.move = function (slice) {
+
+        p.angle = p.angle || 0
+        p.turretAngle = p.turretAngle  || 0
+        p.angle += Math.PI*-1*(p.turn || 0)*slice
+        p.turretAngle += Math.PI*-1*(p.rotate || 0)*slice
+
+        assert(!isNaN(p.angle), "NaN angle")
+
+        p.facing = a2v(p.angle)
+        p.speed += (p.accelerate || -0.5) * p.acceleration * slice
+
+        if(p.speed > p.maxSpeed)  p.speed = p.maxSpeed
+        if(p.speed < p.maxSpeed * -1)           p.speed = p.maxSpeed * -1
+        
+        var velocity = addToVector([0,0], p.facing, p.speed * slice)
+
+        addToVector(p.origin, velocity)
+        p.shape.x = p.origin[0]
+        p.shape.y = p.origin[1]
+        if(p.origin[0] < 0)
+          p.origin[0] = canvas.width
+        if(p.origin[1] < 0)
+          p.origin[1] = canvas.height
+        if(p.origin[0] > canvas.width)
+          p.origin[0] = 0
+        if(p.origin[1] > canvas.height)
+          p.origin[1] = 0
+
+        p.shape.rotation = (p.angle/Math.PI)*180
+        p.turret.rotation = (p.turretAngle/Math.PI)*180
+      }
+      p.move(0)
+      stage.addChild(p.shape)
+    }
+
+    /* 
+      REUSE ME: KEYBOARD CODE
+    */
+
+    function createListener(listeners) {
+      listeners = listeners || [] 
+      var listener = function (event) {
+      var f = true
+        listeners.forEach(function (e) {
+          if(e(event) === false) f = false
+        })
+        return f;
+      }
+      listener.listeners = listeners
+      return listener
+    }
+
+    function createKBHandler (schema, _pairs, actor) {
+      //add thing to handle multiple listeners...
+      //   ... later
+      for (var key in schema) {
+        actor[schema[key]] = 0
+      }
+      var pairs = {}
+      for (var keys in _pairs) {
+        var target = _pairs[keys]
+          , split = keys.split(',')
+          , up = split[0], down = split[1]
+        pairs[down] = pairs[up]   = {target: target, up: up, down: down}
+        actor[target] = 0
+      }
+
+      return function (ke) {
+        var dir = (ke.type == 'keydown' ? 1 : 0)
+        var key = schema[ke.which]
+        if(key) { 
+          actor[key] = dir; 
+          if(pairs[key]) {
+            var p = pairs[key]
+            actor[p.target] = actor[p.up] - actor[p.down]
+          } 
+
+          return false
+        }
+      }
+    }
+    // ^^^ reuse
+   //   paired controls,   propertyname, up, down, off[0]
+//    [[forward, reverse], accelerate, [1, -1]],
+//    [[left, right], turn, [1, -1]],
+
+  var schema1 = {
+      '38': 'forward',
+      '40': 'reverse',
+      '37': 'left',
+      '39': 'right',
+      '86': 'rLeft',
+      '90': 'rRight',
+      '87': 'fire'
+  }
+  var schema2 = {
+      '80': 'forward',
+      '85': 'reverse',
+      '69': 'left',
+      '73': 'right',
+      '188': 'rLeft',
+      '190': 'rRight',
+      '186': 'fire'
+  }
+  var pairs = {
+    'left,right'      : 'turn',
+    'forward,reverse' : 'accelerate',
+    'rLeft,rRight'    : 'rotate'
+  }
+    var p1 = createPlayer('player1', [100,100])
+    var p2 = createPlayer('player2', [924,300])
+    var things = [p1, p2]
+
+    var p1h = createKBHandler (schema1, pairs, p1)
+    var p2h = createKBHandler (schema2, pairs, p2)
+    
+    window.onkeyup = window.onkeydown = createListener([p1h, p2h])
+    //createKBHandler (schema, pairs, p2)
+    //createKBHandler (schema, pairs, p2)
+
+    drawPlayer(p2)
+    drawPlayer(p1)
+    stage.update()
+
+    function handshake (things, iterator) {
+      for(var i = 0; i < things.length; i ++) {
+        for(var j = i + 1; j < things.length; j ++)
+          iterator (things[i], things[j])
+      }
+    }
+
+    var lastTick = Date.now()
+    function controlFrame () {      
+      var now = Date.now()
+      var slice = (now - lastTick)/1000
+
+      //detect collisions
+
+      //iterate over each handshaking pair, without shaking your own hand.
+      handshake(things, function (a, b) {
+
+        //this will have querks at the side of the screen.
+        //need to check dohnut distance.
+
+        var dist = vectorLength(diffVectors(a.origin, b.origin))
+        if(dist < (a.radius + b.radius)) {
+        //how is best to handle collisions?
+        //if something is moving, and something else blocks it, 
+        //then can't move into it. 
+        //also, handle N way collisions without getting stuck.
+          if('function' == typeof a.touch) a.touch(b)
+          if('function' == typeof b.touch) b.touch(a)
+        }
+      })
+
+      things.forEach(function (t) { t.move(slice) })
+
+      lastTick = now
+    }
+    
+    function tick () {
+      controlFrame()
+      stage.update();
+    }
+    Ticker.setFPS(10 );
+    Ticker.addListener( this );
+
+  </script>
+</html>
