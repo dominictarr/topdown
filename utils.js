@@ -48,6 +48,15 @@ function v2a (v) { return Math.atan(v[0]/v[1]) * (v[1] > 0 ? 1 : -1 ) }
 function assert(test, message) {
   if(!test) throw new Error(message)
 }
+;(function () {
+  var up = a2v(0)
+  assert([0, 1])
+})()
+
+function callif(func, recv, args) {
+  if(!args) args = recv
+  if('function' == typeof func) return func.apply(recv, args || [])
+}
 
 function vectorLength(v) {
   var s = 0, l = 2
@@ -55,16 +64,27 @@ function vectorLength(v) {
   return Math.sqrt(s)
 }
 
-  function copyTo(to, from) {
-    for (var p in from) {
-      to[p] = from[p]
-    }
-    return from
+function copyTo(to, from) {
+  for (var p in from) {
+    to[p] = from[p]
   }
+  return from
+}
 
+//iterate over each handshaking pair, without shaking your own hand.
 function handshake (things, iterator) {
   for(var i = 0; i < things.length; i ++) {
     for(var j = i + 1; j < things.length; j ++)
       iterator (things[i], things[j])
+  }
+}
+
+function copyVector(v) {
+  return [v[0], v[1]]
+}
+
+function each(things, iterator) {
+  for (var i in things) {
+    iterator(things[i], i, things)
   }
 }

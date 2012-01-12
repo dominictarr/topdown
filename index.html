@@ -27,20 +27,16 @@
   <body>
     <canvas id="c" width="1024" height="600"></canvas>
     <div id=resources>
-      <img id=hull1 src="images/hull_sprite_larger2.png">
-      <img id=turret1 src="images/turret_sprite1.png">
-      <img id=turret1_flash src="images/turret_sprite_flash1.png">
-      <img id=hull2 src="images/hull_sprite_brown.png">
-      <img id=turret2 src="images/turret_sprite_brown1.png">
-      <img id=rock src="images/rock_sprite1.png">
+      <img id=rock src="">
     </div>
     <p id="r">360</p>
   </body>
   <script src="utils.js"></script>
+  <script src="world.js"></script>
   <script src="keyboard.js"></script>
+  <script src="missile.js"></script>
   <script src="tank.js"></script>
   <script src="rock.js"></script>
-  <script src="world.js"></script>
   <script>
     var canvas = document.getElementById('c');
     var stage = new Stage(canvas);
@@ -69,16 +65,16 @@
     'forward,reverse' : 'accelerate',
     'rLeft,rRight'    : 'rotate'
   }
-  var p1 = createPlayer('player1', [924,300])
-  var p2 = createPlayer('player2', [100,100])
-  var things = [p1, p2]
+  var p1 = createPlayer('green', [924,300])
+  var p2 = createPlayer('brown', [100,100])
 
   var l = 20
   while (l--) {
-    var rock = createRock()
-    drawRock(rock)
-    things.push(rock)
+    world.add(createRock())
   }
+
+  world.add(p1).add(p2)
+
   var p1h = createKBHandler (schema1, pairs, p1)
   var p2h = createKBHandler (schema2, pairs, p2)
     
@@ -90,12 +86,17 @@
     return document.getElementById(id)
   }
 
-  drawPlayer(p2, {hull: image('hull1'), turret: image('turret1'), flash: image('turret1_flash')})
+/*  drawPlayer(p2, {hull: image('hull1'), turret: image('turret1'), flash: image('turret1_flash')})
   drawPlayer(p1, {hull: image('hull2'), turret: image('turret1'), flash: image('turret1_flash')})
-
+*/
   stage.update()
 
-
+  function tick() {
+    world.tick()
+  }
+  
+  Ticker.setFPS( 10 );
+  Ticker.addListener( this );
 
 
   </script>

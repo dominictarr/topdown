@@ -2,12 +2,13 @@
 
 function createPlayer (name, origin) {
   return {
+    type: 'tank',
     name: name,
     origin:   origin || [ 100, 100],
     velocity: [ 0, 0 ],
-    angle: Math.PI*-0.5,
-    turretAngle: Math.PI*-0.5,
-    facing: a2v(Math.PI*1), // or as angle?
+    angle: 0,
+    turretAngle: 0,
+    facing: a2v(0), // or as angle?
     r: 8,
     l: 16,
     w: 16,
@@ -18,12 +19,14 @@ function createPlayer (name, origin) {
     acceleration: 24,
     deacceleration: 16,
     touch: function (other) {
+
+      if(other.type == 'missile') //solid?
+        return
+
       //calculate angle to other object, and bump away from it.
       //reduce speed by the dot product of the facing
-      //
       var dir = normalize(subtractVectors(this.origin, other.origin))
       var d = dot(dir, this.facing)
-      console.error('TOUCH', this.name, d, dir)          
       if(d*this.speed < 0)
         this.speed = d*6
     },
@@ -40,6 +43,7 @@ function createPlayer (name, origin) {
       if(p.fire && (!p.reload || p.reload < time)) {
         p.flash.visible = true
         p.reload = time + 1
+        world.add(createMissile(this)) 
       } else p.flash.visible = false
     
       p.facing = a2v(p.angle)
@@ -70,62 +74,71 @@ function createPlayer (name, origin) {
 /*draw the player*/
 
 
-function drawPlayer (p, sprites) {
+function image(id) {
+  return document.getElementById(id)
+}
 
-  /*var g=new Graphics()
-  g.beginStroke(Graphics.getRGB(0,255,0));
-  g.drawCircle(0,0, p.r)
-  g.moveTo(0,0)
-  */
+//add stuff to load the sprites
+var tankView = {
+  type: 'tank',
+  useSprites: {
+    green_hull: 'images/green_hull.png',
+    green_turret: 'images/green_turret.png',
+    green_flash: 'images/green_flash.png',
+    brown_hull: 'images/brown_hull.png',
+    brown_turret: 'images/brown_turret.png',
+    brown_flash: 'images/brown_flash.png',
+  },
+  init: function (p) {
+    if(p.shape)
+      throw new Error('already initialized tank')
+    
+    function s(part) {
+      return new Bitmap(tankView.sprites[p.name+'_' + part])
+    }
 
-  var hull = new Bitmap(sprites.hull)
-  var turret = new Bitmap(sprites.turret)
-  var flash = new Bitmap(sprites.flash)
+    var hull    = s('hull')
+    var turret  = s('turret') 
+    var flash   = s('flash')
 
-  //g.beginBitmapStroke(hull.image)
-  //ahh, it hasn't loaded yet
+    //g.beginBitmapStroke(hull.image)
+    //ahh, it hasn't loaded yet
 
-  hull.regX = 32;
-  hull.regY = 32;
-  hull.rotation = 90
+    hull.regX = 32;
+    hull.regY = 32;
+    hull.rotation = 90
 
-  copyTo(flash, copyTo(turret, {
-    x:0,
-    regX: 32,
-    regY: 34,
-    rotation: 90      
-  }))
+    copyTo(flash, copyTo(turret, {
+      x:0,
+      regX: 32,
+      regY: 34,
+    }))
 
-  p.turret = turret
-  p.flash = flash
-  p.facing = a2v(p.angle)
+    p.turret = turret
+    p.flash = flash
+    p.facing = a2v(p.angle)
 
-  /*
-  g.lineTo(p.r * 2, 0)
-  g.moveTo(p.l, p.w)
-  g.lineTo(p.l * -1, p.w)
-  g.lineTo(p.l * -1, p.w * -1)
-  g.lineTo(p.l, p.w * -1)
-  g.lineTo(p.l, p.w)
-  */
-  p.shape = new Container()
-  p.shape.addChild(hull)//new Shape(g)
-  p.shape.addChild(turret)//new Shape(g)
-  p.shape.addChild(flash)//new Shape(g)
-  flash.visible = false
+    p.shape = new Container()
+    p.shape.addChild(hull)
+    p.shape.addChild(turret)
+    p.shape.addChild(flash)
+    flash.visible = false
 
-  //split this into motion and drawing.
-  //so that motion is decoupled from drawing.
-  p.update = function () {
+    //split this into motion and drawing.
+    //so that motion is decoupled from drawing.
+    p.move(0, Date.now()/1000)
+    this.update(p)
+    stage.addChild(p.shape)
+  },
+  update: function (p) {
 
     p.shape.rotation = (p.angle/Math.PI)*180
-    p.turret.rotation = (p.turretAngle/Math.PI)*180
-    p.flash.rotation = (p.turretAngle/Math.PI)*180
+    p.turret.rotation = (p.turretAngle/Math.PI)*180 + 90
+    p.flash.rotation = (p.turretAngle/Math.PI)*180 + 90
     p.shape.x = p.origin[0]
     p.shape.y = p.origin[1]
-    
+
   }
-  p.move(0, Date.now()/1000)
-  p.update()
-  stage.addChild(p.shape)
 }
+
+view.add(tankView)
