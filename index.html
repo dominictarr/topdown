@@ -22,7 +22,7 @@
         float: left;
       }
     </style>
-    <script src="easel.js"></script>
+   <!-- <script src="easel.js"></script> -->
   </head>
   <body>
     <canvas id="c" width="1024" height="600"></canvas>
@@ -31,73 +31,111 @@
     </div>
     <p id="r">360</p>
   </body>
+  <!-- EaselJS -->
+  <script src="lib/easeljs/utils/UID.js"></script>
+  <script src="lib/easeljs/geom/Matrix2D.js"></script>
+  <script src="lib/easeljs/geom/Rectangle.js"></script>
+  <script src="lib/easeljs/events/MouseEvent.js"></script>
+  <script src="lib/easeljs/utils/SpriteSheetUtils.js"></script>
+  <script src="lib/easeljs/display/SpriteSheet.js"></script>
+  <script src="lib/easeljs/display/DisplayObject.js"></script>
+  <script src="lib/easeljs/display/Container.js"></script>
+  <script src="lib/easeljs/display/Stage.js"></script>
+  <script src="lib/easeljs/display/BitmapAnimation.js"></script>
+  <script src="lib/easeljs/display/Bitmap.js"></script>
+  <script src="lib/easeljs/display/Graphics.js"></script>
+  <script src="lib/easeljs/display/Shape.js"></script>
+  <script src="lib/easeljs/utils/Ticker.js"></script>-->
+
+  <!-- topdown -->
   <script src="utils.js"></script>
   <script src="world.js"></script>
   <script src="keyboard.js"></script>
+
+  <!-- game objects -->
   <script src="missile.js"></script>
   <script src="tank.js"></script>
-  <script src="rock.js"></script>
+  <script src="rock.js"></script>  
+  
+  <!---->
+
   <script>
-    var canvas = document.getElementById('c');
-    var stage = new Stage(canvas);
-    var lastTick = Date.now()
+  
+  var canvas = document.getElementById('c')
+  var stage = new Stage(canvas)
+  var lastTick = Date.now()
 
-  var schema1 = {
-      '38': 'forward',
-      '40': 'reverse',
-      '37': 'left',
-      '39': 'right',
-      '86': 'rLeft',
-      '90': 'rRight',
-      '87': 'fire'
-  }
-  var schema2 = {
-      '80': 'forward',
-      '85': 'reverse',
-      '69': 'left',
-      '73': 'right',
-      '188': 'rLeft',
-      '190': 'rRight',
-      '186': 'fire'
-  }
-  var pairs = {
-    'left,right'      : 'turn',
-    'forward,reverse' : 'accelerate',
-    'rLeft,rRight'    : 'rotate'
-  }
-  var p1 = createPlayer('green', [924,300])
-  var p2 = createPlayer('brown', [100,100])
+  init()
+  function init () {
 
-  var l = 20
-  while (l--) {
-    world.add(createRock())
-  }
+    var exp = new BitmapAnimation(new SpriteSheet({
+        images: ['images/explosion_sheet.png'],
+        frames: {width: 60, height: 60}
+      }))
 
-  world.add(p1).add(p2)
+    exp.x = 200
+    exp.y = 200
 
-  var p1h = createKBHandler (schema1, pairs, p1)
-  var p2h = createKBHandler (schema2, pairs, p2)
+    exp.gotoAndPlay(0)
     
-  window.onkeyup = window.onkeydown = createListener([p1h, p2h])
-    //createKBHandler (schema, pairs, p2)
-    //createKBHandler (schema, pairs, p2)
+    stage.addChild(exp)
 
-  function image(id) {
-    return document.getElementById(id)
+    var schema1 = {
+        '38': 'forward',
+        '40': 'reverse',
+        '37': 'left',
+        '39': 'right',
+        '86': 'rLeft',
+        '90': 'rRight',
+        '87': 'fire'
+    }
+    var schema2 = {
+        '80': 'forward',
+        '85': 'reverse',
+        '69': 'left',
+        '73': 'right',
+        '188': 'rLeft',
+        '190': 'rRight',
+        '186': 'fire'
+    }
+    var pairs = {
+      'left,right'      : 'turn',
+      'forward,reverse' : 'accelerate',
+      'rLeft,rRight'    : 'rotate'
+    }
+    var p1 = createPlayer('green', [924,300])
+    var p2 = createPlayer('brown', [100,100])
+
+    var l = 20
+    while (l--) {
+      world.add(createRock())
+    }
+
+    world.add(p1).add(p2)
+
+    var p1h = createKBHandler (schema1, pairs, p1)
+    var p2h = createKBHandler (schema2, pairs, p2)
+    
+    window.onkeyup = window.onkeydown = createListener([p1h, p2h])
+      //createKBHandler (schema, pairs, p2)
+      //createKBHandler (schema, pairs, p2)
+
+    function image(id) {
+      return document.getElementById(id)
+    }
+    
+  /*  drawPlayer(p2, {hull: image('hull1'), turret: image('turret1'), flash: image('turret1_flash')})
+    drawPlayer(p1, {hull: image('hull2'), turret: image('turret1'), flash: image('turret1_flash')})
+  */
+    stage.update()
+
   }
-
-/*  drawPlayer(p2, {hull: image('hull1'), turret: image('turret1'), flash: image('turret1_flash')})
-  drawPlayer(p1, {hull: image('hull2'), turret: image('turret1'), flash: image('turret1_flash')})
-*/
-  stage.update()
-
-  function tick() {
+  function tick () {
     world.tick()
   }
-  
+
   Ticker.setFPS( 10 );
   Ticker.addListener( this );
-
 
   </script>
 </html>

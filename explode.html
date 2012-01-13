@@ -1,0 +1,50 @@
+<html>
+
+
+<body onload="init();">
+  <canvas width=600 height=600></canvas>
+
+
+<script src="easel.js"></script>
+
+<script>
+var stage;
+
+var iconSheet = new Image();
+
+function init() {
+  //find canvas and load images, wait for last image to load
+  iconSheet.onload = handleImageLoad;
+  //iconSheet.src = "img/icons.png";
+  iconSheet.src = "images/explosion_sheet.png";
+  //handleImageLoad()
+}
+
+//document.body.onload = init
+
+function handleImageLoad() {
+	// create a new stage and point it at our canvas:
+	// note that we can just pass the id of the canvas:
+	stage = new Stage("testCanvas");
+	
+	/*** FIRST: the "simple" approach ***/
+	// create a simple SpriteSheet using iconSheet with a frame size of 80x80:
+	var data = {images:[iconSheet], frames:{width:80, height:80}};
+	var spriteSheet  = new SpriteSheet(data);
+	
+	// create a BitmapAnimation to display frames from the sprite sheet:
+	var icon1 = new BitmapAnimation(spriteSheet);
+	icon1.y = 100;
+	icon1.x = 90;
+	
+	// because we didn't specify frameData, we have to reference frames by number:
+	icon1.gotoAndStop(2);
+	stage.addChild(icon1);	
+	
+	Ticker.setFPS(30); // low, so we can see the icons
+	Ticker.addListener(stage);
+}
+
+
+</script>
+

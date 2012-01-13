@@ -84,10 +84,10 @@ var tankView = {
   useSprites: {
     green_hull: 'images/green_hull.png',
     green_turret: 'images/green_turret.png',
-    green_flash: 'images/green_flash.png',
+    green_flash: 'images/green_turret_flash.png',
     brown_hull: 'images/brown_hull.png',
     brown_turret: 'images/brown_turret.png',
-    brown_flash: 'images/brown_flash.png',
+    brown_flash: 'images/brown_turret_flash.png',
   },
   init: function (p) {
     if(p.shape)

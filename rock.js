@@ -11,6 +11,7 @@ var rockView = {
   type: 'rock',
   useSprites: {rock: 'images/obstacle_rock.png'},
   init: function (rock) {
+//    exp.gotoAndPlay('explosion')
     var img = new Bitmap(this.sprites.rock)
     rock.shape = img
     img.regX = 32;
