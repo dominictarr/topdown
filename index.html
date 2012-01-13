@@ -52,6 +52,20 @@
   <script src="world.js"></script>
   <script src="keyboard.js"></script>
 
+<script>
+  var canvas = document.getElementById('c')
+  var stage = new Stage(canvas)
+  var lastTick = Date.now()
+  var expSheet = new SpriteSheet({
+        images: ['images/explosion_sheet.png'],
+        frames: {width: 60, height: 60, regX: 30, regY: 30, count: 25},
+        animations: {
+          explode: [0,25, false]
+        }
+      })
+
+</script>
+
   <!-- game objects -->
   <script src="missile.js"></script>
   <script src="tank.js"></script>
@@ -60,26 +74,9 @@
   <!---->
 
   <script>
-  
-  var canvas = document.getElementById('c')
-  var stage = new Stage(canvas)
-  var lastTick = Date.now()
-
   init()
   function init () {
-
-    var exp = new BitmapAnimation(new SpriteSheet({
-        images: ['images/explosion_sheet.png'],
-        frames: {width: 60, height: 60}
-      }))
-
-    exp.x = 200
-    exp.y = 200
-
-    exp.gotoAndPlay(0)
     
-    stage.addChild(exp)
-
     var schema1 = {
         '38': 'forward',
         '40': 'reverse',
@@ -107,9 +104,7 @@
     var p2 = createPlayer('brown', [100,100])
 
     var l = 20
-    while (l--) {
-      world.add(createRock())
-    }
+    while (l--) { world.add(createRock()) }
 
     world.add(p1).add(p2)
 
@@ -117,18 +112,12 @@
     var p2h = createKBHandler (schema2, pairs, p2)
     
     window.onkeyup = window.onkeydown = createListener([p1h, p2h])
-      //createKBHandler (schema, pairs, p2)
-      //createKBHandler (schema, pairs, p2)
 
     function image(id) {
       return document.getElementById(id)
     }
     
-  /*  drawPlayer(p2, {hull: image('hull1'), turret: image('turret1'), flash: image('turret1_flash')})
-    drawPlayer(p1, {hull: image('hull2'), turret: image('turret1'), flash: image('turret1_flash')})
-  */
     stage.update()
-
   }
   function tick () {
     world.tick()

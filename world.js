@@ -51,10 +51,10 @@ var world = {
     this.things.forEach(function (t) { 
       callif(t.move, t, [slice,now])
     })
+    callif(this.ontick, [])
     this.things.forEach(function (t) {
       callif(t.update, t, [])
     })
-    callif(this.ontick, [])
   
     lastTick = now
     stage.update()
