@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>EaselJS Example: Displaying icons using BitmapAnimation and SpriteSheet</title>
+
+
+<!-- Import EaselJS Framework -->
+<script src="lib/easeljs/utils/UID.js"></script>
+<script src="lib/easeljs/geom/Matrix2D.js"></script>
+<script src="lib/easeljs/geom/Rectangle.js"></script>
+<script src="lib/easeljs/events/MouseEvent.js"></script>
+<script src="lib/easeljs/utils/SpriteSheetUtils.js"></script>
+<script src="lib/easeljs/display/SpriteSheet.js"></script>
+<script src="lib/easeljs/display/DisplayObject.js"></script>
+<script src="lib/easeljs/display/Container.js"></script>
+<script src="lib/easeljs/display/Stage.js"></script>
+<script src="lib/easeljs/display/BitmapAnimation.js"></script>
+<script src="lib/easeljs/utils/Ticker.js"></script>
+<!-- End EaselJS Imports -->
+
+</head>
+<body onload="init();">
+	<div class="canvasHolder">
+		<canvas id="testCanvas" width="980" height="280" style="background-color:black"></canvas>
+	</div>
+</body>
+<script>
+var stage;
+
+var iconSheet = new Image();
+
+function init() {
+	//find canvas and load images, wait for last image to load
+	iconSheet.onload = handleImageLoad;
+//	iconSheet.src = "img/icons.png";
+	iconSheet.src = "images/explosion_sheet.png";  
+}
+
+function handleImageLoad() {
+	// create a new stage and point it at our canvas:
+	// note that we can just pass the id of the canvas:
+	stage = new Stage("testCanvas");
+	
+	/*** FIRST: the "simple" approach ***/
+	// create a simple SpriteSheet using iconSheet with a frame size of 80x80:
+	var side = 60
+  var data = {images:[iconSheet], frames:{width:side, height:side, count: 25}};
+	var spriteSheet  = new SpriteSheet(data);
+	
+	// create a BitmapAnimation to display frames from the sprite sheet:
+	var icon1 = new BitmapAnimation(spriteSheet);
+	icon1.y = 100;
+	icon1.x = 90;
+	
+	// because we didn't specify frameData, we have to reference frames by number:
+	icon1.gotoAndPlay(0);
+	stage.addChild(icon1);
+/* 	
+ 	// finally, we'll add one that just plays through:
+ 	var icon6 = icon1.clone();
+// 	icon6.x = icon5.x + 190;
+ 	icon6.gotoAndPlay(0);
+ 	stage.addChild(icon6);
+	
+//*/
+	
+	Ticker.setFPS(30); // low, so we can see the icons
+	Ticker.addListener(stage);
+}
+
+</script>
+	
+</html>
