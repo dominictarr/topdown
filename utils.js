@@ -2,6 +2,18 @@ function randomOrigin() {
   return new Vector(Math.random() * 1024, Math.random() * 600)
 }
 
+function argv (search) { //pass in window.location.search
+
+  var options = {}
+  search.split('&').map(function (e) {
+    if(e[0] == '?') e = e.slice(1)
+    var x = /\??([^=]+)=(.+)/.exec(e)
+    options[x ? x[1] : e] = x ? x[2] : true
+  })
+  return options
+}
+
+
 function assert (test, message) {
   if(!test) throw new Error(message)
 }
