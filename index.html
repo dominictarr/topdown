@@ -7,29 +7,23 @@
       * {
         margin: 0;
         padding: 0;
-      }
-      
-      body {
-        background: #eee;
-        padding: 1em;
+        overflow: hidden;
       }
       
       #c {
         background: #000;
       }
       
-      #r {
+      #resources {
         float: left;
+        display: none;
+        visibility: hidden;
       }
     </style>
    <!-- <script src="easel.js"></script> -->
   </head>
   <body>
-    <canvas id="c" width="1024" height="600"></canvas>
-    <div id=resources>
-      <img id=rock src="">
-    </div>
-    <p id="r">360</p>
+    <canvas id="c" width="500" height="500"></canvas>
   </body>
   <!-- EaselJS -->
   <script src="lib/easeljs/utils/UID.js"></script>
@@ -46,7 +40,7 @@
   <script src="lib/easeljs/display/Text.js"></script>
   <script src="lib/easeljs/display/Graphics.js"></script>
   <script src="lib/easeljs/display/Shape.js"></script>
-  <script src="lib/easeljs/utils/Ticker.js"></script>-->
+  <script src="lib/easeljs/utils/Ticker.js"></script>
 
   <!-- topdown -->
   <script src="vector.js"></script>
@@ -56,6 +50,8 @@
 
 <script>
   var canvas = document.getElementById('c')
+  canvas.width = screenSize.x
+  canvas.height = screenSize.y
   var stage = new Stage(canvas)
   stage.addChild(stage.ground = new Container())
   stage.addChild(stage.actors = new Container())
@@ -118,9 +114,9 @@
       'forward,reverse' : 'accelerate',
       'rLeft,rRight'    : 'rotate'
     }
-    var p1 = createPlayer('green', v(924,300))
-    var p2 = createPlayer('brown', v(100,100))
-
+    var spacer = v(100, 100)
+    var p1 = createPlayer('green', spacer)
+    var p2 = createPlayer('brown', screenSize.sub(spacer))
     var scores = {
       player1: 0,
       player2: 0

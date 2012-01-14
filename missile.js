@@ -48,9 +48,6 @@
 
 view.add({
   type: 'missile',
-  useSprites: {
-    explosion: 'images/explosion_sheet.png'
-  },
   init: function (m) {
     var g = new Graphics()
     g.setStrokeStyle( 1 );

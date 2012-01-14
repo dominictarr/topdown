@@ -1,5 +1,8 @@
+
+var screenSize = new Vector(window.screen.availWidth, window.screen.availHeight)
+
 function randomOrigin() {
-  return new Vector(Math.random() * 1024, Math.random() * 600)
+  return new Vector(Math.random() * screenSize.x, Math.random() * screenSize.y)
 }
 
 function argv (search) { //pass in window.location.search
