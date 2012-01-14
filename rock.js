@@ -2,7 +2,7 @@
 function createRock(origin) {
   return {
     type: 'rock',
-    origin: origin || randomOrigin(),
+    origin: origin ? new Vector(origin) : randomOrigin(),
     name: 'rock',
     radius: 24
   }
@@ -11,15 +11,15 @@ var rockView = {
   type: 'rock',
   useSprites: {rock: 'images/obstacle_rock.png'},
   init: function (rock) {
-//    exp.gotoAndPlay('explosion')
+
     var img = new Bitmap(this.sprites.rock)
     rock.shape = img
     img.regX = 32;
     img.regY = 32;
 
-    img.x = rock.origin[0]
-    img.y = rock.origin[1]
-    stage.addChild(img)
+    img.x = rock.origin.x
+    img.y = rock.origin.y
+    stage.ground.addChild(img)
   }
 }
 view.add(rockView)

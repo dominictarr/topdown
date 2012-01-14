@@ -22,7 +22,8 @@ var world = {
   //iterate over all game objects within a circle
   near: function (center, radius, iterator) {
     each(this.things, function (thing) {
-      var dist = vectorLength(diffVectors(center, thing.origin))
+      var dist = center.diff(thing.origin).length()
+//      vectorLength(diffVectors(center, thing.origin))
       if(dist < radius) iterator(thing, dist)    
     })  
   },
@@ -36,7 +37,8 @@ var world = {
       //this will have querks at the side of the screen.
       //need to check dohnut distance.
 
-      var dist = vectorLength(diffVectors(a.origin, b.origin))
+      var dist = a.origin.diff(b.origin).length()
+      //vectorLength(diffVectors(a.origin, b.origin))
       if(dist < (a.radius + b.radius)) {
         //how is best to handle collisions?
         //if something is moving, and something else blocks it, 

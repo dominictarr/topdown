@@ -43,11 +43,13 @@
   <script src="lib/easeljs/display/Stage.js"></script>
   <script src="lib/easeljs/display/BitmapAnimation.js"></script>
   <script src="lib/easeljs/display/Bitmap.js"></script>
+  <script src="lib/easeljs/display/Text.js"></script>
   <script src="lib/easeljs/display/Graphics.js"></script>
   <script src="lib/easeljs/display/Shape.js"></script>
   <script src="lib/easeljs/utils/Ticker.js"></script>-->
 
   <!-- topdown -->
+  <script src="vector.js"></script>
   <script src="utils.js"></script>
   <script src="world.js"></script>
   <script src="keyboard.js"></script>
@@ -55,6 +57,9 @@
 <script>
   var canvas = document.getElementById('c')
   var stage = new Stage(canvas)
+  stage.addChild(stage.ground = new Container())
+  stage.addChild(stage.actors = new Container())
+  stage.addChild(stage.info = new Container())
   var lastTick = Date.now()
   var expSheet = new SpriteSheet({
         images: ['images/explosion_sheet.png'],
@@ -100,8 +105,12 @@
       'forward,reverse' : 'accelerate',
       'rLeft,rRight'    : 'rotate'
     }
-    var p1 = createPlayer('green', [924,300])
-    var p2 = createPlayer('brown', [100,100])
+    var p1 = createPlayer('green', v(924,300))
+    var p2 = createPlayer('brown', v(100,100))
+    var text = new Text('Player_1 : 01', '36px courier', Graphics.getRGB( 0, 255, 0 ))
+    text.x = 50
+    text.y = 50
+    stage.info.addChild(text)
 
     var l = 20
     while (l--) { world.add(createRock()) }
