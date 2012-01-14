@@ -51,7 +51,7 @@ var world = {
     })
 
     this.things.forEach(function (t) { 
-      callif(t.move, t, [slice,now])
+      callif(t.move, t, [slice, now])
     })
     callif(this.ontick, [])
     this.things.forEach(function (t) {
@@ -76,6 +76,14 @@ var view = {
         console.error('load', name, path)
         loadSprite(viewer, name, path)
       })*/
+  },
+  rm: function (thing) {
+    if(!thing.type)
+      throw new Error('viewable objects must have types')
+    var viewer = view.viewers[thing.type]
+    if(!viewer)
+      throw new Error('must register viewer for type='+thing.type)
+    callif(viewer.rm, viewer, [thing])
   },
   init: function (thing) {
     if(!thing.type)

@@ -7,6 +7,11 @@
         })
         return f;
       }
+      listener.remove = function (item) {
+        var i = listeners.indexOf(item)
+        if(i === -1) return
+        listeners.splice(i,1)
+      }
       listener.listeners = listeners
       return listener
     }

@@ -1,6 +1,6 @@
 /* player behaviour*/
 
-function createPlayer (name, origin) {
+function createTank (name, origin) {
   return {
     type: 'tank',
     name: name,
@@ -31,8 +31,11 @@ function createPlayer (name, origin) {
         this.speed = d*6
     },
     move: function (slice, time) {
-      if(this.health < 0) return //dead!
-
+      if(this.health < 0) {
+        if(!this.dead)
+          this.dead = true, callif(this.ondeath, this, [])
+        return //dead!
+      }
       var p = this
 
       p.angle = p.angle || 0

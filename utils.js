@@ -46,3 +46,8 @@ function each(things, iterator) {
     iterator(things[i], i, things)
   }
 }
+function remove (array, item) {
+  var i = array.indexOf(item)
+  if(i !== -1)
+    array.splice(i, 1)
+}
