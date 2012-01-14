@@ -17,8 +17,8 @@ function createTank (name, origin) {
     maxSpeed: 100,
     health: 100,
     speed: 0,
-    acceleration: 24,
-    deacceleration: 16,
+    acceleration: 32,
+    deacceleration: 24,
     touch: function (other) {
 
       if(other.type == 'missile') //solid?
@@ -40,7 +40,7 @@ function createTank (name, origin) {
 
       p.angle = p.angle || 0
       p.turretAngle = p.turretAngle  || 0
-      p.angle += Math.PI*-1*(p.turn || 0)*slice
+      p.angle += Math.PI*-0.3*(p.turn || 0)*slice
       p.turretAngle += Math.PI*-1*(p.rotate || 0)*slice
 
       assert(!isNaN(p.angle), "NaN angle")

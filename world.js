@@ -16,7 +16,7 @@ var world = {
     var index = this.things.indexOf(thing)
     if(index == -1) return
     var thing = this.things[index]
-    this.things.splice(index)
+    this.things.splice(index, 1) //MUST pass second argument
     callif(this.onrm, [thing])
   },
   //iterate over all game objects within a circle

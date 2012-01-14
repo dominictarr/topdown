@@ -25,6 +25,10 @@
       name: 'missile',
       move: function (slice) {
         this.origin.iadd(this.velocity)
+
+        var wm = 0, wM = canvas.width, hm = 0, hM = canvas.height
+        if(this.origin.x < wm || this.origin.y < hm || this.origin.x > wM || this.origin.y > hM)
+          world.rm(this) //has left the game board
         //addToVector(this.origin, this.facing, this.speed)
       },
       touch: function (other) {
@@ -63,7 +67,9 @@ view.add({
     stage.actors.addChild(m.shape)
   },
   rm: function (m) {
-//    console.log(m)
+    if(m.shape)
+      stage.actors.removeChild(m.shape)
+    m.shape = null
   },
   update: function (m) {
     if(m.hit && !m.explode) {
@@ -71,7 +77,8 @@ view.add({
       stage.actors.addChild(exp)
       stage.actors.removeChild(m.shape)
       exp.onAnimationEnd = function () {
-        stage.actors.removeChild(exp)     
+        stage.actors.removeChild(exp)
+        world.rm(m) 
       }
       m.shape = exp
       exp.gotoAndPlay(0)
