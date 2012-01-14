@@ -22,7 +22,7 @@
 </head>
 <body onload="init();">
 	<div class="canvasHolder">
-		<canvas id="testCanvas" width="980" height="280" style="background-color:black"></canvas>
+		<canvas id="testCanvas" width="980" height="280" style="background-color:white"></canvas>
 	</div>
 </body>
 <script>
@@ -33,7 +33,7 @@ var iconSheet = new Image();
 function init() {
   //find canvas and load images, wait for last image to load
   iconSheet.onload = handleImageLoad;
-  iconSheet.src = "images/explosion_sheet.png";  
+  iconSheet.src = "images/brown_turret_sheet.png";  
 }
 
 function handleImageLoad() {
@@ -43,7 +43,7 @@ function handleImageLoad() {
 
   /*** FIRST: the "simple" approach ***/
 
-  var side = 60
+  var side = 64
   var data = {images:[iconSheet], frames:{width:side, height:side, count: 25}};
   var spriteSheet  = new SpriteSheet(data);
 
