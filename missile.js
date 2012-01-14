@@ -13,7 +13,7 @@
     var f = Vector.a2v(parent.turretAngle + parent.angle)
     var velocity = f.mul(20)
     var o = new Vector(parent.origin).iadd(velocity)
-    var bullet = {
+    return {
       type: 'missile',
       parent: parent,
       origin: o,
@@ -31,26 +31,24 @@
         //don't shoot yourself in the foot
         if(other === this.parent) return
   
+        this.touch = null
         this.speed = 0
         this.hit = 1
+        this.velocity.izero()
         var self = this
         if('tank' == other.type)
           other.health -= 34
         console.error(other.name, 'is explode')
         //need a next tick thing
         this.update = function () {
-          world.rm(this)
+          //world.rm(this)
         }
       }
     }
-    return bullet
   }
 
 view.add({
   type: 'missile',
-  useSprites: {
-    explosion: 'images/explosion_sheet.png'
-  },
   init: function (m) {
     var g = new Graphics()
     g.setStrokeStyle( 1 );
@@ -64,17 +62,20 @@ view.add({
     m.shape = new Shape(g)
     stage.actors.addChild(m.shape)
   },
+  rm: function (m) {
+//    console.log(m)
+  },
   update: function (m) {
-    if(m.hit) {
+    if(m.hit && !m.explode) {
       var exp = new BitmapAnimation(expSheet)
-      stage.actors.removeChild(m.shape)
       stage.actors.addChild(exp)
+      stage.actors.removeChild(m.shape)
       exp.onAnimationEnd = function () {
         stage.actors.removeChild(exp)     
-        world.rm(m) 
       }
       m.shape = exp
       exp.gotoAndPlay(0)
+      m.explode = true
     }
       
     m.shape.x = m.origin.x

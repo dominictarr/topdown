@@ -51,7 +51,7 @@ var world = {
     })
 
     this.things.forEach(function (t) { 
-      callif(t.move, t, [slice,now])
+      callif(t.move, t, [slice, now])
     })
     callif(this.ontick, [])
     this.things.forEach(function (t) {
@@ -71,11 +71,19 @@ var view = {
   add: function (viewer) {
     console.error('ADD', viewer, viewer.type)
     view.viewers[viewer.type] = viewer
-    if(viewer.useSprites)
+    /*if(viewer.useSprites)
       each(viewer.useSprites, function (path, name) {
         console.error('load', name, path)
         loadSprite(viewer, name, path)
-      })
+      })*/
+  },
+  rm: function (thing) {
+    if(!thing.type)
+      throw new Error('viewable objects must have types')
+    var viewer = view.viewers[thing.type]
+    if(!viewer)
+      throw new Error('must register viewer for type='+thing.type)
+    callif(viewer.rm, viewer, [thing])
   },
   init: function (thing) {
     if(!thing.type)
@@ -99,7 +107,7 @@ var view = {
 
 //each viewer declares what sprites it will use, 
 // and the view will load them all, and
-
+/*
 function loadSprite(viewer, name, path) {
   if (view.sprites[path])
     return //sprite already loadeding
@@ -118,7 +126,7 @@ function loadSprite(viewer, name, path) {
     callif(view.onready, view, [])
   }
 }
-
+*/
 world.onadd   = view.init
 world.onrm    = view.rm //IMPLEMENT ME
 world.ontick  = view.tick

@@ -79,5 +79,8 @@ Vector.prototype = {
   },
   angle: function () {
     return Math.atan(this.x/this.y) * (this.x > 0 ? 1 : -1 ) 
+  },
+  clone: function () {
+    return new Vector(this)
   }
 }

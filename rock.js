@@ -9,10 +9,10 @@ function createRock(origin) {
 }
 var rockView = {
   type: 'rock',
-  useSprites: {rock: 'images/obstacle_rock.png'},
+  sprites: {rock: new Bitmap('images/obstacle_rock.png')},
   init: function (rock) {
 
-    var img = new Bitmap(this.sprites.rock)
+    var img = this.sprites.rock.clone()
     rock.shape = img
     img.regX = 32;
     img.regY = 32;

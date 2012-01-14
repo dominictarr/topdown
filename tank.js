@@ -1,6 +1,6 @@
 /* player behaviour*/
 
-function createPlayer (name, origin) {
+function createTank (name, origin) {
   return {
     type: 'tank',
     name: name,
@@ -31,8 +31,11 @@ function createPlayer (name, origin) {
         this.speed = d*6
     },
     move: function (slice, time) {
-      if(this.health < 0) return //dead!
-
+      if(this.health < 0) {
+        if(!this.dead)
+          this.dead = true, callif(this.ondeath, this, [])
+        return //dead!
+      }
       var p = this
 
       p.angle = p.angle || 0
@@ -85,20 +88,20 @@ function image(id) {
 //add stuff to load the sprites
 var tankView = {
   type: 'tank',
-  useSprites: {
-    green_hull: 'images/green_hull.png',
-    green_turret: 'images/green_turret.png',
-    green_flash: 'images/green_turret_flash.png',
-    brown_hull: 'images/brown_hull.png',
-    brown_turret: 'images/brown_turret.png',
-    brown_flash: 'images/brown_turret_flash.png',
+  sprites: {
+    green_hull  : new Bitmap('images/green_hull.png'),
+    green_turret: new Bitmap('images/green_turret.png'),
+    green_flash : new Bitmap('images/green_turret_flash.png'),
+    brown_hull  : new Bitmap('images/brown_hull.png'),
+    brown_turret: new Bitmap('images/brown_turret.png'),
+    brown_flash : new Bitmap('images/brown_turret_flash.png'),
   },
   init: function (p) {
     if(p.shape)
       throw new Error('already initialized tank')
     
     function s(part) {
-      return new Bitmap(tankView.sprites[p.name+'_' + part])
+      return tankView.sprites[p.name+'_' + part].clone()
     }
 
     var hull    = s('hull')
@@ -143,12 +146,11 @@ var tankView = {
       return
     }
 
-    p.shape.rotation = (p.angle/Math.PI)*180
+    p.shape.rotation  = (p.angle/Math.PI)*180
     p.turret.rotation = (p.turretAngle/Math.PI)*180 + 90
-    p.flash.rotation = (p.turretAngle/Math.PI)*180 + 90
+    p.flash.rotation  = (p.turretAngle/Math.PI)*180 + 90
     p.shape.x = p.origin.x
-    p.shape.y = p.origin.y
-    
+    p.shape.y = p.origin.y    
   }
 }
 
