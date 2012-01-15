@@ -49,6 +49,10 @@
   <script src="world.js"></script>
   <script src="keyboard.js"></script>
 
+  <!-- game objects -->
+  <script src="models.js"></script>
+  <script src="views.js"></script>
+
 <script>
   var canvas = document.getElementById('c')
   canvas.width = screenSize.x
@@ -57,29 +61,27 @@
   stage.addChild(stage.ground = new Container())
   stage.addChild(stage.actors = new Container())
   stage.addChild(stage.info = new Container())
+
+  var models = model(world) // get tank, missile, and rocks
+  var views = viewers(view, stage)
   var lastTick = Date.now()
   var expSheet = new SpriteSheet({
         images: ['images/explosion_sheet.png'],
         frames: {width: 60, height: 60, regX: 30, regY: 30, count: 25},
-        animations: {
+        /*animations: {
           explode: [0,25, false]
-        }
+        }*/
       })
 
-</script>
 
-  <!-- game objects -->
-  <script src="missile.js"></script>
-  <script src="tank.js"></script>
-  <script src="rock.js"></script>  
+  //setTimeout(init, 1000)
   
-  <!---->
-
-  <script>
   init()
   function init () {
+  
     var opts = argv(window.location.search)
     var ctrl = {}
+    
     if(opts.dvorak) {
       ctrl = {
         green: {
@@ -131,7 +133,7 @@
 
     window.players = {}
     function createPlayer(name) {
-      var player = createTank(name, spawn[name].clone())
+      var player = models.createTank(name, spawn[name].clone())
       var listener = createKBHandler (ctrl[name], pairs, player)
       listeners.listeners.push(listener)      
 
@@ -167,7 +169,7 @@
     stage.info.addChild(messages)
 
     var l = ROCKS
-    while (l--) { world.add(createRock()) }
+    while (l--) { world.add(models.createRock()) }
 
     function image(id) {
       return document.getElementById(id)
