@@ -83,33 +83,33 @@
       console.log('DVORAK')
       ctrl = {
         green: {
-          '38'  : 'forward' , '40'  : 'reverse' ,
-          '37'  : 'left'    , '39'  : 'right'   ,
-          '86'  : 'rLeft'   , '90'  : 'rRight'  ,
-          '87'  : 'fire'
-        },
-        brown: {
           '80'  : 'forward' , '85'  : 'reverse' ,
           '69'  : 'left'    , '73'  : 'right'   ,
-          '188' : 'rLeft'   , '190' : 'rRight' ,
-          '186' : 'fire'
+          '186' : 'rLeft'   , '188' : 'rRight' ,
+          '190' : 'fire'
+        },
+        brown: {
+          '38'  : 'forward' , '40'  : 'reverse' ,
+          '37'  : 'left'    , '39'  : 'right'   ,
+          '87'  : 'rLeft'   , '86'  : 'rRight'  ,
+          '90'  : 'fire'
         }
       }
     } else {
       console.log('QWERTY')
       ctrl = {
         green: {
-          '38': 'forward',  '40': 'reverse', 
-          '37': 'left',     '39': 'right', 
-          '188': 'rLeft',    '190': 'rRight',
-          '191': 'fire'
-        },
-        brown: {
           '82': 'forward',  '70': 'reverse',
           '68': 'left',     '71': 'right',
-          '81': 'rLeft',   '87': 'rRight',
-          '69': 'fire'
-        }    
+          '69': 'rLeft',   '81': 'rRight',
+          '87': 'fire'
+        },
+        brown: {
+          '38': 'forward',  '40': 'reverse', 
+          '37': 'left',     '39': 'right', 
+          '191': 'rLeft',    '188': 'rRight',
+          '190': 'fire'
+        }
       }
     }
     var pairs = {
