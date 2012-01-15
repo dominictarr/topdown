@@ -7,22 +7,28 @@ function viewers (view, stage) {
 
   //add stuff to load the sprites
   var turretFrames = { width: 64, height: 64, count: 12, regX: 32, regY: 32 }
-  var turretAni = { 
+  var hullFrames = { width: 64, height: 64, count: 4, regX: 32, regY: 32 }
+  var turretAni = {
     fire: {frames: [0, 1], next: 'ready'},
     ready: [10, 10, false]
   }
   var tankView = {
     type: 'tank',
     sprites: {
-      green_hull  : new Bitmap('images/green_hull.png'),
-      green_turret: new BitmapAnimation(new SpriteSheet({
-      images: ['images/green_turret_sheet.png'],
+      green_hull  : new BitmapAnimation(new SpriteSheet({
+        images: ['images/green_hull.png'],
+        frames: hullFrames,
+      })), green_turret: new BitmapAnimation(new SpriteSheet({
+      images: ['images/green_turret.png'],
       frames: turretFrames,
       animations: turretAni
       })),
-      brown_hull  : new Bitmap('images/brown_hull.png'),
+      brown_hull  : new BitmapAnimation(new SpriteSheet({
+        images: ['images/brown_hull.png'],
+        frames: hullFrames
+      })),
       brown_turret: new BitmapAnimation(new SpriteSheet({
-        images: ['images/brown_turret_sheet.png'],
+        images: ['images/brown_turret.png'],
         frames: turretFrames,
         animations: turretAni
         })),
@@ -37,11 +43,9 @@ function viewers (view, stage) {
 
       var hull    = s('hull')
       var turret  = s('turret')
-      hull.regX = 32;
-      hull.regY = 32;
       hull.rotation = 90
-
       p.turret = turret
+      p.hull = hull
       p.turret.gotoAndStop('ready')
       p.facing = Vector.a2v(p.angle)
 
@@ -56,6 +60,7 @@ function viewers (view, stage) {
       stage.actors.addChild(p.shape)
     },
     update: function (p) {
+      p.hull.gotoAndStop(Math.round((100 - p.health) / 33))
       if(p.health <= 0) {
         if (p.turret) {
           p.shape.removeChild(p.turret)
@@ -64,7 +69,7 @@ function viewers (view, stage) {
         return
       }
       if(p.fired) p.turret.gotoAndPlay('fire')
-
+      console.log(Math.round((100 - p.health) / 33))
       p.shape.rotation  = (p.angle/Math.PI)*180
       p.turret.rotation = (p.turretAngle/Math.PI)*180 + 90
       p.shape.x = p.origin.x
