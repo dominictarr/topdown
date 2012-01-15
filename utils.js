@@ -1,5 +1,5 @@
 
-var screenSize = new Vector(window.screen.availWidth, window.screen.availHeight)
+var screenSize = new Vector(window.innerWidth, window.innerHeight)
 
 function randomOrigin() {
   return new Vector(Math.random() * screenSize.x, Math.random() * screenSize.y)

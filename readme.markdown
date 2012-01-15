@@ -1,6 +1,6 @@
 # tank
 
-the objective is to uh, destroy the other tank.
+The objective is to uh, destroy the other tank. strictly 2 player only, right now.
 
 # Controls
   * player 1 (green)
@@ -20,4 +20,11 @@ the objective is to uh, destroy the other tank.
     * <        -- turret left
     * >        -- turret right
     * /        -- FIRE !!!
-    
+
+# todo
+
+  * capture the flag
+  * powerups - health, speed, (rapid | 2nd barrel) 
+  * destroy obstacles / dead tanks.
+  * non-random levels
+
