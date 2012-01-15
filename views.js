@@ -80,6 +80,12 @@ function viewers (view, stage) {
 
   var missileView = {
     type: 'missile',
+    sprites: {
+      explosion: new BitmapAnimation(new SpriteSheet({
+        images: ['images/explosion_sheet.png'],
+        frames: {width: 60, height: 60, regX: 30, regY: 30, count: 25},
+      }))
+    },
     init: function (m) {
       var g = new Graphics()
       g.setStrokeStyle( 1 );
@@ -97,7 +103,7 @@ function viewers (view, stage) {
     },
     update: function (m) {
       if(m.hit && !m.explode) {
-        var exp = new BitmapAnimation(expSheet)
+        var exp = this.sprites.explosion.clone()
         stage.actors.addChild(exp)
         stage.actors.removeChild(m.shape)
         exp.onAnimationEnd = function () {

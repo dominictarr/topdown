@@ -1,7 +1,10 @@
 
 var lastTick = Date.now()
 
-var world = {
+function World () {
+
+}
+World.prototype = {
   add: function (thing) {
     if(!thing)
       throw new Error('cannot add null thing to world')
@@ -66,14 +69,18 @@ var world = {
 }
 
 
-var view = {
+function View (world) {
+  this._world = world
+  this.viewers = {}
+}
+View.prototype = {
   add: function (viewer) {
-    view.viewers[viewer.type] = viewer
+    this.viewers[viewer.type] = viewer
   },
   rm: function (thing) {
     if(!thing.type)
       throw new Error('viewable objects must have types')
-    var viewer = view.viewers[thing.type]
+    var viewer = this.viewers[thing.type]
     if(!viewer)
       throw new Error('must register viewer for type='+thing.type)
     callif(viewer.rm, viewer, [thing])
@@ -81,13 +88,16 @@ var view = {
   init: function (thing) {
     if(!thing.type)
       throw new Error('viewable objects must have types')
-    var viewer = view.viewers[thing.type]
+    if(!this.viewers)
+      console.log(this)
+    var viewer = this.viewers[thing.type]
     if(!viewer)
       throw new Error('must register viewer for type='+thing.type)
     viewer.init(thing)
   },
   tick: function () {
-    each(world.things, function (thing) {
+    var view = this
+    each(this._world.things, function (thing) {
       var viewer = view.viewers[thing.type]
       if(viewer)
         callif(viewer.update, viewer, [thing])
@@ -97,7 +107,3 @@ var view = {
   sprites: {},
   _spritesToLoad: 0
 }
-
-world.onadd   = view.init
-world.onrm    = view.rm
-world.ontick  = view.tick

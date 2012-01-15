@@ -91,7 +91,6 @@ function model (world) {
       name: 'missile',
       move: function (slice) {
         this.origin.iadd(this.velocity)
-
         var wm = 0, wM = canvas.width, hm = 0, hM = canvas.height
         if(this.origin.x < wm || this.origin.y < hm || this.origin.x > wM || this.origin.y > hM)
           world.rm(this) //has left the game board
