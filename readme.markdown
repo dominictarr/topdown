@@ -27,4 +27,4 @@ The objective is to uh, destroy the other tank. strictly 2 player only, right no
   * powerups - health, speed, (rapid | 2nd barrel) 
   * destroy obstacles / dead tanks.
   * non-random levels
-
+  * hull, turret animations, etc.
