@@ -38,7 +38,6 @@ var world = {
       //need to check dohnut distance.
 
       var dist = a.origin.diff(b.origin).length()
-      //vectorLength(diffVectors(a.origin, b.origin))
       if(dist < (a.radius + b.radius)) {
         //how is best to handle collisions?
         //if something is moving, and something else blocks it, 
@@ -69,13 +68,7 @@ var world = {
 
 var view = {
   add: function (viewer) {
-    console.error('ADD', viewer, viewer.type)
     view.viewers[viewer.type] = viewer
-    /*if(viewer.useSprites)
-      each(viewer.useSprites, function (path, name) {
-        console.error('load', name, path)
-        loadSprite(viewer, name, path)
-      })*/
   },
   rm: function (thing) {
     if(!thing.type)
@@ -105,28 +98,6 @@ var view = {
   _spritesToLoad: 0
 }
 
-//each viewer declares what sprites it will use, 
-// and the view will load them all, and
-/*
-function loadSprite(viewer, name, path) {
-  if (view.sprites[path])
-    return //sprite already loadeding
-    
-  var img = document.createElement('img')
-  img.src = path
-  img.style = 'visibility: hidden;'
-  document.body.appendChild(img)
-  view.sprites[path] = img
-  viewer.sprites = viewer.sprites || {}
-  viewer.sprites[name] = img
-  view._spritesToLoad ++
-  img.onload = function () {
-    view._spritesToLoad --
-    console.error('SPRITES LOADED')
-    callif(view.onready, view, [])
-  }
-}
-*/
 world.onadd   = view.init
-world.onrm    = view.rm //IMPLEMENT ME
+world.onrm    = view.rm
 world.ontick  = view.tick

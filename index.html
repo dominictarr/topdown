@@ -81,7 +81,6 @@
     var opts = argv(window.location.search)
     var ctrl = {}
     if(opts.dvorak) {
-      console.log('DVORAK')
       ctrl = {
         green: {
           '80'  : 'forward' , '85'  : 'reverse' ,
@@ -97,18 +96,17 @@
         }
       }
     } else {
-      console.log('QWERTY')
       ctrl = {
         green: {
           '82': 'forward',  '70': 'reverse',
           '68': 'left',     '71': 'right',
-          '69': 'rLeft',   '81': 'rRight',
+          '69': 'rLeft',    '81': 'rRight',
           '87': 'fire'
         },
         brown: {
           '38': 'forward',  '40': 'reverse', 
           '37': 'left',     '39': 'right', 
-          '191': 'rLeft',    '188': 'rRight',
+          '191': 'rLeft',   '188': 'rRight',
           '190': 'fire'
         }
       }

@@ -8,7 +8,7 @@
       parent: parent,
       origin: o,
       velocity: velocity,
-      facing: f, //TODO add parent's velocity to facing for realism.
+      facing: f,
       radius: 2,
       hit: 0,
       name: 'missile',
@@ -18,7 +18,6 @@
         var wm = 0, wM = canvas.width, hm = 0, hM = canvas.height
         if(this.origin.x < wm || this.origin.y < hm || this.origin.x > wM || this.origin.y > hM)
           world.rm(this) //has left the game board
-        //addToVector(this.origin, this.facing, this.speed)
       },
       touch: function (other) {
         //don't shoot yourself in the foot
@@ -31,7 +30,6 @@
         var self = this
         if('tank' == other.type)
           other.health -= CANNON_DAMAGE
-        console.error(other.name, 'is explode')
       }
     }
   }
