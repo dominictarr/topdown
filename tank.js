@@ -14,11 +14,11 @@ function createTank (name, origin) {
     w: 16,
     radius: 20,
     accelerate: false,
-    maxSpeed: 100,
-    health: 100,
+    maxSpeed: TANK_MAXSPEED,
+    health: TANK_HEALTH,
     speed: 0,
-    acceleration: 32,
-    deacceleration: 24,
+    acceleration: TANK_ACCEL,
+    deacceleration: TANK_DECEL,
     touch: function (other) {
 
       if(other.type == 'missile') //solid?
@@ -28,7 +28,7 @@ function createTank (name, origin) {
       //reduce speed by the dot product of the facing
       var d = this.origin.sub(other.origin).inor().dot(this.facing)
       if(d*this.speed < 0)
-        this.speed = d*6
+        this.speed = d*TANK_BOUNCE
     },
     move: function (slice, time) {
       if(this.health < 0) {
@@ -40,14 +40,14 @@ function createTank (name, origin) {
 
       p.angle = p.angle || 0
       p.turretAngle = p.turretAngle  || 0
-      p.angle += Math.PI*-0.3*(p.turn || 0)*slice
-      p.turretAngle += Math.PI*-1*(p.rotate || 0)*slice
+      p.angle += Math.PI*-1*TANK_TURN*(p.turn || 0)*slice
+      p.turretAngle += Math.PI*-1*TURRET_TURN*(p.rotate || 0)*slice
 
       assert(!isNaN(p.angle), "NaN angle")
 
       if(p.fire && (!p.reload || p.reload < time)) {
         p.flash.visible = true
-        p.reload = time + 1
+        p.reload = time + TANK_RELOAD
         world.add(createMissile(this)) 
       } else p.flash.visible = false
     
@@ -55,18 +55,14 @@ function createTank (name, origin) {
       p.speed += (p.accelerate) * p.acceleration * slice
 
       if(!p.accelerate) {
-        p.speed -= p.speed/0.9 * slice
+        p.speed -= p.speed/TANK_DECEL*slice
         if(p.speed < 0) p.speed = 0
       }
 
       if(p.speed > p.maxSpeed)      p.speed = p.maxSpeed
       if(p.speed < p.maxSpeed * -1) p.speed = p.maxSpeed * -1
     
-      var velocity = p.facing.mul(p.speed * slice)
-//      addToVector([0,0], p.facing, p.speed * slice)
-
-        p.origin.iadd(velocity)
-  //    addToVector(p.origin, velocity)
+      p.origin.iadd(p.facing.mul(p.speed * slice))
 
       var wm = 0, wM = canvas.width, hm = 0, hM = canvas.height
 
