@@ -120,10 +120,13 @@ function viewers (view, stage) {
 
   var rockView = {
     type: 'rock',
-    sprites: {rock: new Bitmap('images/obstacle_rock.png')},
+    sprites: {
+      rock1: new Bitmap('images/obstacle_rock1.png'),
+      rock2: new Bitmap('images/obstacle_rock2.png')
+    },
     init: function (rock) {
 
-      var img = this.sprites.rock.clone()
+      var img = this.sprites[Math.random() > 0.5 ? 'rock1' : 'rock2'].clone()
       rock.shape = img
       img.regX = 32;
       img.regY = 32;
