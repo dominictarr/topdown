@@ -13,6 +13,19 @@ function Vector (x, y) {
 }
 
 Vector.a2v = function (a) { return new Vector(Math.cos(a), Math.sin(a)) }
+function r() {
+  return Math.random()*2 - 1
+}
+Vector.random = function (x,y) {
+  return new Vector(r()*x, r()*y) 
+}
+Vector.center = function () {
+  var c = new Vector(0,0)
+  for (var i = 0; i < arguments.length; i ++) {
+    c.iadd(arguments[i])
+  }
+  return c.idiv(arguments.length)
+}
 Vector.prototype = {
   dot: function (v) {
     return this.x * v.x + this.y * v.y 

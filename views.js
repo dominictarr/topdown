@@ -69,7 +69,6 @@ function viewers (view, stage) {
         return
       }
       if(p.fired) p.turret.gotoAndPlay('fire')
-      console.log(Math.round((100 - p.health) / 33))
       p.shape.rotation  = (p.angle/Math.PI)*180
       p.turret.rotation = (p.turretAngle/Math.PI)*180 + 90
       p.shape.x = p.origin.x
@@ -108,7 +107,7 @@ function viewers (view, stage) {
         stage.actors.removeChild(m.shape)
         exp.onAnimationEnd = function () {
           stage.actors.removeChild(exp)
-          world.rm(m) 
+          //world.rm(m) 
         }
         m.shape = exp
         exp.gotoAndPlay(0)
