@@ -126,7 +126,7 @@ function viewers (view, stage) {
     },
     init: function (rock) {
 
-      var img = this.sprites[(Math.randow() > 0.5 ? 'rock1' : 'rock2'].clone()
+      var img = this.sprites[Math.random() > 0.5 ? 'rock1' : 'rock2'].clone()
       rock.shape = img
       img.regX = 32;
       img.regY = 32;
