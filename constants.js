@@ -1,10 +1,12 @@
 const TANK_RELOAD   = 3
-const TANK_ACCEL    = 32
+const TANK_ACCEL    = 32 //32
 const TANK_DECEL    = 0.9
-const TANK_MAXSPEED = 32
+const TANK_MAXSPEED = 32 //32
 const TANK_BOUNCE   = 6
 const TANK_HEALTH   = 100
 const TANK_TURN     = 0.3
+const POWERUP_HEALTH = 33
+const POWERUP_SPEED = 64
 const TURRET_TURN   = 1
 const CANNON_DAMAGE = 34
 const CANNON_SPEED  = 20

@@ -11,7 +11,7 @@
       }
       
       #c {
-        background: #000;
+        background: hsl(80, 80%, 10%) ;
       }
       
       #resources {
@@ -49,110 +49,34 @@
   <script src="world.js"></script>
   <script src="keyboard.js"></script>
 
+  <!-- game objects -->
+  <script src="models.js"></script>
+  <script src="views.js"></script>
+
 <script>
   var canvas = document.getElementById('c')
   canvas.width = screenSize.x
   canvas.height = screenSize.y
+
   var stage = new Stage(canvas)
-  stage.addChild(stage.ground = new Container())
-  stage.addChild(stage.actors = new Container())
-  stage.addChild(stage.info = new Container())
-  var lastTick = Date.now()
-  var expSheet = new SpriteSheet({
-        images: ['images/explosion_sheet.png'],
-        frames: {width: 60, height: 60, regX: 30, regY: 30, count: 25},
-        animations: {
-          explode: [0,25, false]
-        }
-      })
-
-</script>
-
-  <!-- game objects -->
-  <script src="missile.js"></script>
-  <script src="tank.js"></script>
-  <script src="rock.js"></script>  
   
-  <!---->
+  var lastTick = Date.now()
 
-  <script>
-  init()
-  function init () {
-    var opts = argv(window.location.search)
-    var ctrl = {}
-    if(opts.dvorak) {
-      ctrl = {
-        green: {
-          '80'  : 'forward' , '85'  : 'reverse' ,
-          '69'  : 'left'    , '73'  : 'right'   ,
-          '186' : 'rLeft'   , '188' : 'rRight' ,
-          '190' : 'fire'
-        },
-        brown: {
-          '38'  : 'forward' , '40'  : 'reverse' ,
-          '37'  : 'left'    , '39'  : 'right'   ,
-          '87'  : 'rLeft'   , '86'  : 'rRight'  ,
-          '90'  : 'fire'
-        }
-      }
-    } else {
-      ctrl = {
-        green: {
-          '82': 'forward',  '70': 'reverse',
-          '68': 'left',     '71': 'right',
-          '69': 'rLeft',    '81': 'rRight',
-          '87': 'fire'
-        },
-        brown: {
-          '38': 'forward',  '40': 'reverse', 
-          '37': 'left',     '39': 'right', 
-          '191': 'rLeft',   '188': 'rRight',
-          '190': 'fire'
-        }
-      }
-    }
-    var pairs = {
-      'left,right'      : 'turn',
-      'forward,reverse' : 'accelerate',
-      'rLeft,rRight'    : 'rotate'
-    }
-    var score = {
-      green: 0,
-      brown: 0
-    }
-    var spacer = v(100, 100)
-    var spawn = {
-      green: spacer,
-      brown: screenSize.sub(spacer)
-    }
-
-    var listeners = window.onkeyup = window.onkeydown = createListener([])
-
-
-    window.players = {}
-    function createPlayer(name) {
-      var player = createTank(name, spawn[name].clone())
-      var listener = createKBHandler (ctrl[name], pairs, player)
-      listeners.listeners.push(listener)      
-
-      player.ondeath = function () {
-        score[name == 'green' ? 'brown': 'green'] ++
-        updateScore()
-        listeners.remove(listener)
-        setTimeout(function () {
-          createPlayer(name)
-        }, 2000)
-      }
-      window.players[name] = player
-      world.add(player)
-      return player
-    }
-    
-    createPlayer('green')
-    createPlayer('brown')
-    
-    function updateScore() {
-      messages.removeAllChildren()      
+  function init(stage, level) {
+    stage.removeAllChildren()
+    stage.addChild(stage.ground = new Container())
+    stage.addChild(stage.actors = new Container())
+    stage.addChild(stage.info = new Container())
+    var world = new World()
+    var view = new View(world, stage)
+    world.onadd   = view.init.bind(view)
+    world.onrm    = view.rm.bind(view)
+    world.ontick  = view.tick.bind(view)
+    //TODO mix models onto world like jquery plugins.
+    var models = model(world) // get tank, missile, and rocks
+    var views = viewers(view, stage)
+      world.updateScore = function () {
+      messages.removeAllChildren()
       var t1 = new Text('Player1 : ' + score.green, '24px courier', Graphics.getRGB( 0, 255, 0 ))
       var t2 = new Text('Player2 : ' + score.brown, '24px courier', Graphics.getRGB( 0, 255, 0 ))
       t1.x = 50
@@ -163,24 +87,99 @@
       messages.addChild(t2)
     }
     var messages = new Container() 
-    updateScore()
+    world.updateScore()
     stage.info.addChild(messages)
 
-    var l = ROCKS
-    while (l--) { world.add(createRock()) }
+    level(world, models, stage)
+    Ticker.setFPS( TARGET_FPS );
+    Ticker.addListener({
+      tick: function () { world.tick() }
+    });
 
-    function image(id) {
-      return document.getElementById(id)
+  }
+
+  //this is how to load the next level!
+  //window.onclick = function () {init(stage, deathmatch)}
+  //need to use dependency injection, 
+
+  var score = {
+    green: 0,
+    brown: 0
+  }
+
+
+  //setTimeout(init, 1000)
+  var levels = {
+    simple: function (world, models, stage) {
+
+    function rock(v) {
+      world.createRock(v)
+    }//create spawn pads in the corners, with defensive shields,
+      //and 3 rocks in the center.
+    var spacer = v(100, 100)
+    var spawn = {
+      green: spacer,
+      brown: screenSize.sub(spacer)
     }
+
+    var ang = spawn.green.sub(spawn.brown).angle() + Math.PI/2
+      console.log(ang)
+
+      rock(spawn.green.add(Vector.a2v(ang - 0.4).imul(100)))
+      rock(spawn.green.add(Vector.a2v(ang).imul(100)))
+      rock(spawn.green.add(Vector.a2v(ang + 0.4).imul(100)))
+      rock(spawn.brown.add(Vector.a2v(ang - 0.4 + Math.PI).imul(100)))
+      rock(spawn.brown.add(Vector.a2v(ang       + Math.PI).imul(100)))
+      rock(spawn.brown.add(Vector.a2v(ang + 0.4 + Math.PI).imul(100)))
+
+      var a = Vector.random(200, 200)
+        , b = Vector.random(200, 200)
+        , c = Vector.random(200, 200)
+
+      var rCenter = Vector.center(a, b, c)
+      var center = Vector.center(spawn.green, spawn.brown).isub(rCenter)
+
+      rock(center.add(a))
+      rock(center.add(b))
+      rock(center.add(c))
+
+      world.createPlayer('green', spawn.green)
+      world.createPlayer('brown', spawn.brown)
+
+      //add power ups...
+      //hmm, make a default view... 
+      //it should just show the radius and the
+      //name
+      world.createPowerup('health', v(422, 200))
+      world.createPowerup('speed', v(200, 422))
+    }  
+  }
+
+  var listeners = window.onkeyup = window.onkeydown = createListener([])
+    window.players = {}
+  var level = levels[opts.level] || deathmatch
+  init(stage, level)  
+
+  function deathmatch(world, models, stage) {
+  
+    var spacer = v(100, 100)
+    var spawn = {
+      green: spacer,
+      brown: screenSize.sub(spacer)
+    }
+
+    //refactor this when mixin models to world.
+    
+    world.createPlayer('green', spawn.green)
+    world.createPlayer('brown', spawn.brown)
+    
+    // it might be better to do this with an html layer over the top of the canvas.
+
+    var l = ROCKS
+    while (l--) { world.createRock() }
     
     stage.update()
   }
-  function tick () {
-    world.tick()
-  }
-
-  Ticker.setFPS( TARGET_FPS );
-  Ticker.addListener( this );
 
   </script>
 </html>
