@@ -48,18 +48,19 @@ function model (world) {
   world.addClass('Player', createPlayer)
   world.addClass('Powerup', createPowerup)
 
-  function createPowerup (type, origin) {
+  function createPowerup (subtype, origin) {
     function onTouch(apply, unapply) {
       return 
     }
     
     return {
       origin: origin.clone(),
-      type: type,
+      type: 'powerup',
+      subtype: subtype,
       radius: 10,
       visible: true,
       solid: false,
-      touch: type == 'health' ?
+      touch: subtype == 'health' ?
         function (other) {
             if(other.health > 0 && other.health < 100 && this.visible) {
               var self = this
@@ -67,7 +68,7 @@ function model (world) {
               setTimeout(function () { self.visible = true }, 30e3)
             }
         }
-      : type == 'speed' ?
+      : subtype == 'speed' ?
         function (other) {
             if(other.health > 0 && this.visible) {
               var self = this

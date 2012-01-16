@@ -5,6 +5,24 @@ function viewers (view, stage) {
     return document.getElementById(id)
   }
 
+  var powerupView = {
+    type: 'powerup',
+    sprites: {
+        health: new Bitmap('images/powerup_health.png'),
+        speed: new Bitmap('images/powerup_speed.png'),
+        ammo: new Bitmap('images/powerup_ammo.png'),
+    }, 
+    init: function (thing, stage) {
+      thing.shape = this.sprites[thing.subtype].clone()
+      thing.shape.x = thing.origin.x
+      thing.shape.y = thing.origin.y
+      stage.ground.addChild(thing.shape)      
+    },
+    update: function (thing) {
+      thing.shape.visible = thing.visible
+    }
+  }
+
   //add stuff to load the sprites
   var turretFrames = { width: 64, height: 64, count: 12, regX: 32, regY: 32 }
   var hullFrames = { width: 64, height: 64, count: 4, regX: 32, regY: 32 }
@@ -60,7 +78,9 @@ function viewers (view, stage) {
       stage.actors.addChild(p.shape)
     },
     update: function (p) {
-      p.hull.gotoAndStop(Math.round((100 - p.health) / 33))
+      var damage = Math.round((100 - p.health) / 33)
+      if (damage > 3) damage = 3
+      p.hull.gotoAndStop(damage)
       if(p.health <= 0) {
         if (p.turret) {
           p.shape.removeChild(p.turret)
@@ -140,5 +160,6 @@ function viewers (view, stage) {
  view.add(missileView)
  view.add(tankView)
  view.add(rockView)
+ view.add(powerupView)
 
 }
