@@ -1,6 +1,19 @@
+```
+    ____ _   _ ___  ____ ____    ___ ____ _  _ _  _    
+    |     \_/  |__] |___ |__/     |  |__| |\ | |_/     
+    |___   |   |__] |___ |  \     |  |  | | \| | \_    
+        ____  ___  __                                    
+  ____  \   \/  /_/  |_ _______   ____    _____    ____  
+_/ __ \  \     / \   __\\_  __ \_/ __ \  /     \ _/ __ \ 
+\  ___/  /     \  |  |   |  | \/\  ___/ |  Y Y  \\  ___/ 
+ \___  >/___/\  \ |__|   |__|    \___  >|__|_|  / \___  >
+     \/       \_/                    \/       \/      \/ 
+                                                                                     
+```
+
 # tank
 
-The objective is to uh, destroy the other tank. strictly 2 player only, right now.
+The objective is to uh, destroy the other tank. strictly 2 player only.
 
 # Controls
 
@@ -45,4 +58,5 @@ http://www.youtube.com/watch?v=1lzpv_rCm_Y -- welcome to the jungle
 http://www.youtube.com/watch?v=zT4p_kWWlQo -- the wolf is loose
 http://www.youtube.com/watch?v=F8tjWhxPvBY -- the trooper
 http://www.youtube.com/watch?v=JMtvfnNoNFU -- battery
-
+http://www.youtube.com/watch?v=wFRvk2UKhwQ -- purple haze
+http://www.youtube.com/watch?v=GFLTxPjvqSE -- voodoo child
